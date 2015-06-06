@@ -17,11 +17,14 @@
     -->
     <meta name="keywords" content="{$KEYWORD}"/>
     <meta name="description" content="{$DESC}"/>
-    <meta name="author" content="soulteary inspire by Thomas Park"/>
-    <link rel="stylesheet" href="{$assets}css/packed.min.css?v=1107"/>
-    <meta property="wb:webmaster" content="c6eb3350438219e9"/>
-    <!--[if lt IE 9]>
-    <script src="assets/js/html5.js"></script>
-    <![endif]-->
+    <link href="{$assets}css/bootstrap.min.css" rel="stylesheet">
+    <link href="{$assets}css/style.css?v=20131030" rel="stylesheet">
+    <script type="text/javascript">
+        window.$GO$ = {'version':'DEMO'};
+    </script>
+    <script type="text/javascript" src="{$assets}js/jquery-1.10.2.min.js"></script>
+    <script type="text/javascript" src="{$assets}js/moment.min.js"></script>
+    <script type="text/javascript" src="{$assets}js/jstorage.min.js"></script>
+    <script type="text/javascript" src="{$assets}js/bootstrap.min.js"></script>
 </head>
-<body class="go9999" id="top" data-spy="scroll" data-target=".subnav" data-offset="80">
+<body>
