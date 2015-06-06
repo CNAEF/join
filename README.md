@@ -1,5 +1,7 @@
 ## 中国·支教联盟(CNAEF) [报名系统](http://www.go9999.com)
 
+![联盟LOGO](https://avatars1.githubusercontent.com/u/12692315?v=3&s=300)
+
 ### 项目说明
 
 这个项目为联盟的报名网站，主要提供志愿者信息提交、审核的功能。
