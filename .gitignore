@@ -7,6 +7,9 @@ public/join/aef-db.php
 public/join/aef-config.php
 logs/*
 !logs/README.md
+backup/*
+!backup/README.md
+
 
 .DS_Store
 *.db
@@ -15,6 +18,7 @@ logs/*
 *.cmd
 ~*
 
+*.sql
 *.seed
 *.log
 *.csv
