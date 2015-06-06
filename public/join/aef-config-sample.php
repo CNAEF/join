@@ -32,6 +32,13 @@ define('C_CHARSET', 'utf-8');
 define('C_SITE_NAME', '中国·支教联盟');
 /** 静态资源地址 */
 define('C_ASSETS_PREFIX', '//apply.go9999.com/assets/');
+/** 程序密钥 */
+define('C_SECRET', 'DEV_SECRET_KEY');
+
+/** 数据库配置 */
+if (file_exists(FILE_PREFIX . "db.php")) {
+    include(FILE_PREFIX . "db.php");
+}
 
 /** 载入程序模块 */
 function __autoload($classname)
