@@ -1,6 +1,7 @@
 <?php
 /**
  * CNAEF
+ *
  * 程序核心函数库。
  *
  * @version 1.0.1
@@ -15,12 +16,13 @@
  *          - @function scan_file                   获取网站文件列表
  *          - @function display_file_permissions    读取文件夹权限
  *          - @function gzip_accepted               判断服务器是否支持GZIP
+ *          - @function json                        输出JSON内容
+ *          - @function message                     显示系统消息
  *
  *
  * @email   soulteary@qq.com
  * @website http://soulteary.com
  */
-
 
 if (!defined('FILE_PREFIX')) include "../error-forbidden.php";
 
@@ -304,6 +306,111 @@ class Core
         }
 
         return $useCallback;
+    }
+
+    /**
+     * 以JSON格式显示系统消息
+     *
+     * @todo
+     *      - 使用NGINX限制ORIGIN
+     * @since 1.0.1
+     *
+     * @param $data
+     */
+    public function json($data)
+    {
+        header('Extra Data: CNAEF JOIN SYSTEM v' . VERSION);
+        header('Access-Control-Allow-Origin: *');
+        header('Content-type:text/html; charset=UTF-8');
+        header('Cache-Control: no-cache');
+        header('Pragma: no-cache');
+        header("Content-type:application/json");
+        exit(json_encode($data));
+    }
+
+    /**
+     * 显示系统消息
+     *
+     * @since 1.0.1
+     *
+     * @param string $msg HEADER消息头部。
+     * @param string $url 要转向的地址。
+     * @param boolean $isAutoGo 是否自动转向。
+     * @return mixed HTML消息页面。
+     */
+    public function message($msg, $url = 'javascript:history.back(-1);', $isAutoGo = false)
+    {
+        if(is_array($msg)){
+            if(is_array($msg['message'])){
+                array_walk($msg['message'], function(&$n) {
+                    $n = "<p>$n</p>\n";
+                });
+                $msg['message'] = implode('',$msg['message']);
+            }
+            $msg = '<h2>'.$msg['title'].'</h2>'.$msg['message'];
+        }
+        else{
+            if ($msg == '404') {
+                header("HTTP/1.1 404 Not Found");
+                $msg = '<p>404 请求页面不存在！</p>';
+            }
+        }
+
+        echo <<<EOT
+<!doctype html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+EOT;
+        if ($isAutoGo) {
+            echo "<meta http-equiv=\"refresh\" content=\"2;url=$url\" />";
+        }
+        echo <<<EOT
+    <title>系统消息</title>
+    <style type="text/css">
+        body {
+            background-color: #F7F7F7;
+            font-family: Arial;
+            font-size: 12px;
+            line-height: 150%;
+        }
+        .main {
+            position: absolute;
+            width: 580px;
+            min-height: 70px;
+            top: 20%;
+            left: 50%;
+            margin-left: -290px;
+            margin-top: -35px;
+            background-color: #FFF;
+            border: 1px solid #DFDFDF;
+            box-shadow: 1px 1px #E4E4E4;
+            padding: 10px;
+        }
+        .main p {
+            color: #666;
+            line-height: 1.5;
+            font-size: 12px;
+            margin: 13px 20px;
+        }
+        .main a {
+            margin: 0 5px;
+            color: #11A1DA;
+        }
+        .main a:hover {
+            color: #34B7EB;
+        }
+    </style>
+</head>
+<body>
+    <div class="main">
+        $msg
+        <p><a href="$url">&laquo;点击返回</a></p>
+    </div>
+</body>
+</html>
+EOT;
+        exit;
     }
 
 }
