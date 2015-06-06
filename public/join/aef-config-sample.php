@@ -34,6 +34,10 @@ define('C_SITE_NAME', '中国·支教联盟');
 define('C_ASSETS_PREFIX', '//apply.go9999.com/assets/');
 /** 程序密钥 */
 define('C_SECRET', 'DEV_SECRET_KEY');
+/** 后台基础口令字段 */
+define('C_BASE_CODE_KEY', 'DEV_BASE_CODE');
+/** 后台基础口令 */
+define('C_BASE_CODE_VAL', 'DEV_BASE_CODE');
 
 /** 数据库配置 */
 if (file_exists(FILE_PREFIX . "db.php")) {
