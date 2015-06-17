@@ -83,8 +83,72 @@ class Ticket extends Safe
         return (preg_match("/^[1-9][0-9]{4,}$/", $str)) ? true : false;
     }
 
-
+    /* 变更说明：表单合法性检查在客户端完成； 简化转义操作；简化SQL语句生成（原代码更名为result_old()）*/
+    /* 后续问题：表单结构名称发生变化，需要更改数据库user_info1和user_info2两个表结构*/
     private function result()
+    {
+        $data = $_REQUEST;
+
+        $DB = new MySql(['MODE' => 'WRITE', 'DEBUG' => DEBUG]);
+        $ip = new IP(['ONLYIP' => true, 'ECHO' => false]);
+        $DB->query("SET NAMES utf8");
+
+        //字符转义操作
+        foreach($data as $key=>$value)
+        {
+            $data[$key] = $DB->escapeSQL($value);
+        }
+        //SQL语句生成 表单名称前缀为info1_插入user_info1表，前缀为info2_插入user_info2表
+        $info1_key	= "INSERT INTO user_info1 (id";
+        $info1_val	= ") VALUES (null";
+        $info2_key	= "INSERT INTO user_info2 (id";
+        $info2_val	= ") VALUES (null";
+        foreach($data as $key=>$value)
+        {
+            if(is_numeric(strpos($key,"info1_"))){
+                $info1_key = $info1_key.",".substr($key,6);
+                $info1_val = $info1_val.",'".$value."'";
+            }
+            else if(is_numeric(strpos($key,"info2_"))){
+                $info2_key = $info2_key.",".substr($key,6);
+                $info2_val = $info2_val.",'".$value."'";
+            }
+        }
+        $sql1 = $info1_key.$info1_val.");";
+        $DB->query($sql1);
+        $id = $DB->insert_id();
+        $info2_key = $info2_key.",uid";
+        $info2_val = $info2_val.",'".$id."'";
+        $sql2 = $info2_key.$info2_val.");";
+        $exec = $DB->query($sql);
+        if ($exec) {
+            if ($this->args['DEBUG']) {
+                $error['title'] = "调试信息";
+                $message[] = "SQL: $sql";
+                $message[] = "SQL ERROR: $DB->geterror()";
+                $message[] = "REQUEST ARGU: $this->args";
+                $message[] = "IP: $ip->result";
+                $message[] = "DEBUG DATA: " . Debug::theDebug();
+                $message[] = "UA INFO: " . $_SERVER['HTTP_USER_AGENT'];
+                $error['message'] = $message;
+                core::message($error);
+            } else {
+                $ret['extra']['desc'] = "报名成功。";
+                $ret['extra']['code'] = 200;
+                core::json($ret);
+            }
+        } else {
+        //若失败插入失败查询
+            $sql = "INSERT INTO `error` (`id` ,`username`, `qq`, `phone`, `ip`, `date`) VALUES (NULL, '$FullName', '$QQNumber', '$CellPhone', " . ip2long($ip->result) . ", CURRENT_TIMESTAMP);";
+            $DB->query($sql);
+            $ret['extra']['desc'] = "提交数据出现问题。";
+            $ret['extra']['code'] = 500;
+            core::json($ret);
+        }
+    }
+
+
+    private function result_old()
     {
         $data = $_REQUEST;
 
