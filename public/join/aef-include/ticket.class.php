@@ -99,9 +99,9 @@ class Ticket extends Safe
             $data[$key] = $DB->escapeSQL($value);
         }
         //SQL语句生成 表单名称前缀为info1_插入user_info1表，前缀为info2_插入user_info2表
-        $info1_key	= "INSERT INTO `user_info1` (`id`;
+        $info1_key	= "INSERT INTO user_info1 (id";
         $info1_val	= ") VALUES (null";
-        $info2_key	= "INSERT INTO `user_info2` (`id`;
+        $info2_key	= "INSERT INTO user_info2 (id";
         $info2_val	= ") VALUES (null";
         foreach($data as $key=>$value)
         {
