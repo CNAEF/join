@@ -68,6 +68,7 @@ class MySQL extends Safe
                 core::json($error);
             }
         }
+		$DB->query("SET NAMES utf8");
     }
 
     /**
@@ -107,6 +108,20 @@ class MySQL extends Safe
             return $this->result;
         }
     }
+	
+	public function insert($table, $data, $escape = true)
+	{
+		$safeData = array();
+		foreach ($data as $key => $value) {
+			$safeData['`' . $key . '`'] = $escape ? $this->escapeSQL($value) : $value;
+		}
+		$sql  = 'INSERT INTO `'.$table.'` (`';
+		$sql .= implode("`,`", array_keys($safeData));
+		$sql .= '`) VALUES (\'';
+		$sql .= implode("','", $safeData);
+		$sql .= '\')';
+		return $this->query($sql);
+	}
 
     /**
      * 转义SQL

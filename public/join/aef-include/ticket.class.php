@@ -18,6 +18,7 @@ class Ticket extends Safe
     private $process_time_start;
     private $process_time_end;
 
+
     function __construct()
     {
         $this->args = core::init_args(func_get_args());
@@ -82,266 +83,165 @@ class Ticket extends Safe
     {
         return (preg_match("/^[1-9][0-9]{4,}$/", $str)) ? true : false;
     }
+	
+	private function result() 
+	{
+		$data = $_REQUEST;
+		$mapping = array(
+			// 新版字段			|目前新版前段名称				|对应的旧版字段			|对应的旧版编号
+			'name				|username						|1.username				|',
+			'sex				|sex							|1.user_sex				|',
+			'birthday			|birthday						|						|',
+			'_age				|								|1.user_age				|',
+			'married			|married						|1.user_is_married		|',
+			'hometown_province	|info1_user_hometown_province	|1.user_hometown		|',
+			'hometown_city		|info1_user_hometown_city		|1.user_hometown		|',
+			'id_num				|user_id_num					|						|',
+			'id_photo			|user_id_photo					|						|',
+			'user_photo			|user_photo						|						|',
+			'edu_level			|info1_user_edu_level			|1.user_edu_level		|',
+			'edu_photo			|edu_photo						|						|',
+			'?_edu_high_level	|								|2.edu_high_level		|',
+			'edu_university		|info2_edu_university			|2.edu_university_level	|',
+			'profession			|info1_user_profession			|1.user_profession		|',
+			'special			|info2_user_special				|						|',
+			'work				|info1_user_work				|						|',
+			'work_experience	|info2_work_experience			|2.work_experience		|',
+			'phone				|info1_user_phone				|1.user_phone			|',
+			'email				|info1_user_email				|1.user_email			|',
+			'qq					|info1_user_qq					|1.user_qq				|',
+			'cur_province		|info1_user_cur_province		|						|',
+			'cur_city			|info1_user_cur_city			|						|',
+			'cur_addr			|info1_user_cur_addr			|1.user_cur_addr		|',
+			'?_user_post_addr	|								|1.user_post_addr		|',
+			'post_code			|info1_user_post_code			|1.user_post_code		|',
+			'family_title		|info2_family_title				|2.family_title			|',
+			'family_name		|info2_family_name				|2.family_name			|',
+			'family_contact		|info2_family_contact			|2.family_contact		|',
+			'family_workplace	|info2_family_workplace			|2.family_workplace		|',
+			'family_addr		|info2_family_addr				|						|',
+			'?urgent_title		|								|2.urgent_title			|',
+			'?urgent_name		|								|2.urgent_name			|',
+			'?urgent_contact	|								|2.urgent_contact		|',
+			'?urgent_workplace	|								|2.urgent_workplace		|',
+			'is_disability		|info2_is_disability			|2.is_disability		|',
+			'is_experience		|info2_is_experience			|2.is_experience		|',
+			'predict_deadline	|info2_predict_deadline			|2.predict_deadline		|',
+			'begin_date			|info2_begin_date				|2.begin_date			|',
+			'cur_status			|info2_cur_status				|						|',
+			'cur_income			|cur_income						|						|',
+			'info_from			|info_from						|2.info_from			|',
+			'Q1					|info2_Q1						|						|',
+			'Q2					|info2_Q2						|						|',
+			'Q3					|info2_Q3						|						|',
+			'Q4					|info2_Q4						|						|',
+			'?_Q1				|								|2.Q1					|',
+			'?_Q2				|								|2.Q2					|',
+			'?_Q3				|								|2.Q3					|',
+			'?_Q4				|								|2.Q4					|',
+			'?_Q5				|								|2.Q5					|',
+			'?_Q6				|								|2.Q6					|',
+			'?_Q7				|								|2.Q7					|',
+			'?_Q8				|								|2.Q8					|',
+			'?_Q9				|								|2.Q9					|',
+			'?_Q10				|								|2.Q10					|',
+			'?_Q11				|								|2.Q11					|',
+			'?user_status		|								|1.user_status			|',
+			'?verify_admin_id	|								|1.verify_admin_id		|',
+			'?verify_time		|								|1.verify_time			|',
+			'?verify_status		|								|1.verify_status		|',
+			'?time				|								|1.time					|',
+		);
+		$data2DB = $errors  = [];
+		foreach ($map as $key=>$value) {
+			$arr = explode('|', $value);
+			$index = str_replace('?', '', trim($arr[0]));
+			if (strpos('_', $index) === 0)
+				continue;
+			$data2DB[$index] = $$index;
 
-
-    private function result()
-    {
-        $data = $_REQUEST;
-
-        $FullName = $data['f1'];
-        $Age = $data['f3'];
-        $Gender = $data['f2'];
-        $MaritalStatus = $data['f4'];
-        $Education = $data['f5'];
-        $Hometown = $data['f6'];
-        $Profession = $data['f7'];
-        $Living = $data['f8'];
-        $HighSchool = $data['f9'];
-        $University = $data['f10'];
-        $WorkExperience = $data['f11'];
-        $PostalAddress = $data['f12'];
-        $ZipCode = $data['f13'];
-        $FixedTelephone = $data['f14'];
-        $CellPhone = $data['f15'];
-        $EMail = $data['f16'];
-        $QQNumber = $data['f17'];
-
-        $FamilyAppellation = $data['f18'];
-        $FamilyName = $data['f19'];
-        $FamilyContact = $data['f20'];
-        $FamilyWorkUnit = $data['f21'];
-
-        $EmergencyContactAppellation = $data['f22'];
-        $EmergencyContactName = $data['f23'];
-        $EmergencyContactContact = $data['f24'];
-        $EmergencyContactWorkUnit = $data['f25'];
-
-        $SpecialSkills = $data['f26'];
-
-
-        $MedicalDisability = $data['f27'];
-        $SupportEducationExperience = $data['f28'];
-        $ExpectedTermSupportEducation = $data['f29'];
-        $StartDateToSupportEducation = $data['f30'];
-        $WhereDidTouLearnThisActivity = $data['f31'];
-
-        $QUESTION1 = $data['f32'];
-        $QUESTION2 = $data['f33'];
-        $QUESTION3 = $data['f34'];
-        $QUESTION4 = $data['f35'];
-        $QUESTION5 = $data['f36'];
-        $QUESTION6 = $data['f37'];
-        $QUESTION7 = $data['f38'];
-        $QUESTION8 = $data['f39'];
-        $QUESTION9 = $data['f40'];
-        $QUESTION10 = $data['f41'];
-        $QUESTION11 = $data['f42'];
-
-
-        //中文2-4位
-        if (!preg_match("/^[\x{0391}-\x{FFE5}]{2,4}+$/u", $FullName)) {
-            $ret['extra']['desc'] = "请输入正确的名字。";
-            $ret['extra']['code'] = 400;
-            core::json($ret);
-        }
-        if ((int)$Age < 18) {
-            $ret['extra']['desc'] = "目前只允许成年人进行提交。";
-            $ret['extra']['code'] = 401;
-            core::json($ret);
-        }
-        if (!in_array($Gender, [1, 2])) {
-            $ret['extra']['desc'] = "性别必须要明确。";
-            $ret['extra']['code'] = 402;
-            core::json($ret);
-        }
-        if (!in_array($MaritalStatus, [1, 2])) {
-            $ret['extra']['desc'] = "我们想了解一下您的婚姻情况。";
-            $ret['extra']['code'] = 403;
-            core::json($ret);
-        }
-        if (!in_array($Education, [1, 2, 3, 4, 5, 6, 7])) {
-            $ret['extra']['desc'] = "请选择您的接受教育程度。";
-            $ret['extra']['code'] = 404;
-            core::json($ret);
-        }
-        //中文2-20位内
-        if (!$this->CheckIsChinese($Hometown)) {
-            $ret['extra']['desc'] = "请填写您的籍贯。";
-            $ret['extra']['code'] = 405;
-            core::json($ret);
-        }
-        if (isset($Profession) && !$this->CheckIsInput($Profession)) {
-            $ret['extra']['desc'] = "请填写您的职业。";
-            $ret['extra']['code'] = 406;
-            core::json($ret);
-        }
-        if (!$this->CheckIsInput($Living)) {
-            $ret['extra']['desc'] = "您的现居住地是那里呢。";
-            $ret['extra']['code'] = 407;
-            core::json($ret);
-        }
-        if (!$this->CheckIsInput($HighSchool)) {
-            $ret['extra']['desc'] = "您的高中是在那里就读呢。";
-            $ret['extra']['code'] = 408;
-            core::json($ret);
-        }
-        if (!$this->CheckIsInput($University)) {
-            $ret['extra']['desc'] = "您的大学是在那里就读呢。";
-            $ret['extra']['code'] = 409;
-            Core::json($ret);
-        }
-        if (isset($WorkExperience) && !$this->CheckIsInput($WorkExperience)) {
-            $ret['extra']['desc'] = "请完善您的工作经历。";
-            $ret['extra']['code'] = 410;
-            core::json($ret);
-        }
-        if (!$this->CheckIsInput($PostalAddress)) {
-            $ret['extra']['desc'] = "请完善邮政地址。";
-            $ret['extra']['code'] = 411;
-            core::json($ret);
-        }
-        if (!$this->CheckIsPostalNumber($ZipCode)) {
-            $ret['extra']['desc'] = "忘记填写邮编了吗。";
-            $ret['extra']['code'] = 412;
-            core::json($ret);
-        }
-        if (isset($FixedTelephone) && !$this->CheckIsFixedTelephone($FixedTelephone)) {
-            $ret['extra']['desc'] = "固定电话格式似乎不对。";
-            $ret['extra']['code'] = 413;
-            core::json($ret);
-        }
-        if (!$this->CheckIsCellPhone($CellPhone)) {
-            $ret['extra']['desc'] = "请填写正确的手机号码。";
-            $ret['extra']['code'] = 414;
-            core::json($ret);
-        }
-        if (!$this->CheckIsMail($EMail)) {
-            $ret['extra']['desc'] = "请补充邮箱地址。";
-            $ret['extra']['code'] = 415;
-            core::json($ret);
-        }
-        if (!$this->CheckIsQQ($QQNumber)) {
-            $ret['extra']['desc'] = "忘记填写QQ号码了吗。";
-            $ret['extra']['code'] = 416;
-            core::json($ret);
-        }
-        if (!preg_match("/^[\x{0391}-\x{FFE5}]{2,4}+$/u", $FamilyAppellation)) {
-            $ret['extra']['desc'] = "请输入正确的称谓";
-            $ret['extra']['code'] = 417;
-            core::json($ret);
-        }
-        if (!preg_match("/^[\x{0391}-\x{FFE5}]{2,4}+$/u", $FamilyName)) {
-            $ret['extra']['desc'] = "请输入正确的家人姓名";
-            $ret['extra']['code'] = 418;
-            core::json($ret);
-        }
-        if (!$this->CheckIsInput($FamilyContact)) {
-            $ret['extra']['desc'] = "请输入正确的家人姓名";
-            $ret['extra']['code'] = 419;
-            core::json($ret);
-        }
-        if (!$this->CheckIsInput($FamilyWorkUnit)) {
-            $ret['extra']['desc'] = "请输入正确的家人工作单位";
-            $ret['extra']['code'] = 420;
-            core::json($ret);
-        }
-
-        if (!preg_match("/^[\x{0391}-\x{FFE5}]{2,4}+$/u", $EmergencyContactAppellation)) {
-            $ret['extra']['desc'] = "请输入正确的紧急联系人称谓";
-            $ret['extra']['code'] = 421;
-            core::json($ret);
-        }
-        if (!preg_match("/^[\x{0391}-\x{FFE5}]{2,4}+$/u", $EmergencyContactName)) {
-            $ret['extra']['desc'] = "请输入正确的紧急联系人姓名";
-            $ret['extra']['code'] = 422;
-            core::json($ret);
-        }
-        if (!$this->CheckIsInput($EmergencyContactContact)) {
-            $ret['extra']['desc'] = "请输入正确的紧急联系人姓名";
-            $ret['extra']['code'] = 423;
-            core::json($ret);
-        }
-        if (!$this->CheckIsInput($EmergencyContactWorkUnit)) {
-            $ret['extra']['desc'] = "请输入正确的紧急联系人工作单位";
-            $ret['extra']['code'] = 424;
-            core::json($ret);
-        }
-        //if (!$this->CheckIsInput($SpecialSkills)) {
-        //    $ret['extra']['desc'] = "特别技能";
-        //    $ret['extra']['code'] = 425;
-        //    Core::json($ret);
-        //}
-
-        if (!$this->CheckIsInput($ExpectedTermSupportEducation)) {
-            $ret['extra']['desc'] = "需要填写计划的支教时间。";
-            $ret['extra']['code'] = 426;
-            core::json($ret);
-        }
-
-        if (!$this->CheckIsInput($StartDateToSupportEducation)) {
-            $ret['extra']['desc'] = "需要填写计划的开始支教的时间。";
-            $ret['extra']['code'] = 427;
-            core::json($ret);
-        }
-
-        //其他暂时不验证（应该验证长度的）
-        $DB = new MySql(['MODE' => 'WRITE', 'DEBUG' => DEBUG]);
-        $ip = new IP(['ONLYIP' => true, 'ECHO' => false]);
-        $DB->query("SET NAMES utf8");
-        $FullName = $DB->escapeSQL($FullName);
-        $Age = $DB->escapeSQL($Age);
-        $Gender = $DB->escapeSQL($Gender);
-        $MaritalStatus = $DB->escapeSQL($MaritalStatus);
-        $Education = $DB->escapeSQL($Education);
-        $Hometown = $DB->escapeSQL($Hometown);
-        $Profession = $DB->escapeSQL($Profession);
-        $Living = $DB->escapeSQL($Living);
-        $HighSchool = $DB->escapeSQL($HighSchool);
-        $University = $DB->escapeSQL($University);
-        $WorkExperience = $DB->escapeSQL($WorkExperience);
-        $PostalAddress = $DB->escapeSQL($PostalAddress);
-        $ZipCode = $DB->escapeSQL($ZipCode);
-        $FixedTelephone = $DB->escapeSQL($FixedTelephone);
-        $CellPhone = $DB->escapeSQL($CellPhone);
-        $EMail = $DB->escapeSQL($EMail);
-        $QQNumber = $DB->escapeSQL($QQNumber);
-
-        $FamilyAppellation = $DB->escapeSQL($FamilyAppellation);
-        $FamilyName = $DB->escapeSQL($FamilyName);
-        $FamilyContact = $DB->escapeSQL($FamilyContact);
-        $FamilyWorkUnit = $DB->escapeSQL($FamilyWorkUnit);
-
-        $EmergencyContactAppellation = $DB->escapeSQL($EmergencyContactAppellation);
-        $EmergencyContactName = $DB->escapeSQL($EmergencyContactName);
-        $EmergencyContactContact = $DB->escapeSQL($EmergencyContactContact);
-        $EmergencyContactWorkUnit = $DB->escapeSQL($EmergencyContactWorkUnit);
-
-        $SpecialSkills = $DB->escapeSQL($SpecialSkills);
-
-
-        $MedicalDisability = $DB->escapeSQL($MedicalDisability);
-        $SupportEducationExperience = $DB->escapeSQL($SupportEducationExperience);
-        $ExpectedTermSupportEducation = $DB->escapeSQL($ExpectedTermSupportEducation);
-        $StartDateToSupportEducation = $DB->escapeSQL($StartDateToSupportEducation);
-        $WhereDidTouLearnThisActivity = $DB->escapeSQL($WhereDidTouLearnThisActivity);
-
-        $QUESTION1 = $DB->escapeSQL($QUESTION1);
-        $QUESTION2 = $DB->escapeSQL($QUESTION2);
-        $QUESTION3 = $DB->escapeSQL($QUESTION3);
-        $QUESTION4 = $DB->escapeSQL($QUESTION4);
-        $QUESTION5 = $DB->escapeSQL($QUESTION5);
-        $QUESTION6 = $DB->escapeSQL($QUESTION6);
-        $QUESTION7 = $DB->escapeSQL($QUESTION7);
-        $QUESTION8 = $DB->escapeSQL($QUESTION8);
-        $QUESTION9 = $DB->escapeSQL($QUESTION9);
-        $QUESTION10 = $DB->escapeSQL($QUESTION10);
-        $QUESTION11 = $DB->escapeSQL($QUESTION11);
-
-        $sql = "INSERT INTO `user_info1` (`id`, `username`, `user_age`, `user_sex`, `user_is_married`, `user_edu_level`, `user_hometown`, `user_profession`, `user_cur_addr`, `user_post_addr`, `user_post_code`, `user_phone`, `user_mobile`, `user_email`, `user_qq`, `user_status`, `verify_admin_id`, `verify_time`, `verify_status`, `time`) VALUES (null, '$FullName', '$Age', '$Gender', '$MaritalStatus', '$Education', '$Hometown', '$Profession', '$Living', '$PostalAddress', '$ZipCode', '$FixedTelephone', '$CellPhone', '$EMail', '$QQNumber', '1', '-1', CURRENT_TIMESTAMP, '1', CURRENT_TIMESTAMP);";
-        $DB->query($sql);
-        $id = $DB->insert_id();
-        $sql = "INSERT INTO `user_info2` (`id`, `uid`, `edu_high_level`, `edu_university_level`, `work_experience`, `family_title`, `family_name`, `family_contact`, `family_workplace`, `urgent_title`, `urgent_name`, `urgent_contact`, `urgent_workplace`, `tech_experience`, `is_disability`, `is_experience`, `predict_deadline`, `begin_date`, `info_from`, `Q1`, `Q2`, `Q3`, `Q4`, `Q5`, `Q6`, `Q7`, `Q8`, `Q9`, `Q10`, `Q11`) VALUES (null, '$id', '$HighSchool', '$University', '$WorkExperience', '$FamilyAppellation', '$FamilyName', '$FamilyContact', '$FamilyWorkUnit', '$EmergencyContactAppellation', '$EmergencyContactName', '$EmergencyContactContact', '$EmergencyContactWorkUnit', '$SpecialSkills', '$MedicalDisability', '$SupportEducationExperience', '$ExpectedTermSupportEducation', '$StartDateToSupportEducation', '$WhereDidTouLearnThisActivity', '$QUESTION1', '$QUESTION2', '$QUESTION3', '$QUESTION4', '$QUESTION5', '$QUESTION6', '$QUESTION7', '$QUESTION8', '$QUESTION9', '$QUESTION10', '$QUESTION11');";
-        $exec = $DB->query($sql);
+			if (!preg_match("/^[\x{0391}-\x{FFE5}]{2,4}+$/u", $data2DB['name']))
+				$errors['name'] = "请输入正确的名字。";
+			if (strtotime($data2DB['birthday']) < 18) 
+				$errors['birthday'] = "目前只允许成年人进行提交。";
+			if (!in_array($data2DB['sex'], [1, 2])) 
+				$errors['sex'] = "性别必须要明确。";
+			if (!in_array($data2DB['married'], [1, 2])) 
+				$errors['married'] = "我们想了解一下您的婚姻情况。";
+			if (!in_array($data2DB['edu_level'], [1, 2, 3, 4, 5, 6, 7])) 
+				$errors['edu_level'] = "请选择您的接受教育程度。";
+			if (!$this->CheckIsChinese($data2DB['hometown_province'])) 
+				$errors['hometown_province'] = "请填写您的籍贯。";
+			if (!$this->CheckIsChinese($data2DB['hometown_city'])) 
+				$errors['hometown_city'] = "请填写您的籍贯。";
+			if (!$data2DB['id_num'])
+				$errors['id_num'] = "请填写您的身份证号码。";
+			if (!$data2DB['edu_university'])
+				$errors['edu_university'] = "请填写您的毕业院校。";
+			if (!$data2DB['profession'])
+				$errors['profession'] = "请填写您的专业。";
+			//special			
+			if (!$data2DB['work'])
+				$errors['work'] = "请填写您的职业。";
+			if (!$data2DB['work_experience'])
+				$errors['work_experience'] = "请完善您的工作经历。";			
+			if (!$this->CheckIsCellPhone(!$data2DB['phone'])) 
+				$errors['phone'] = "请填写正确的手机号码。";
+			if (!$this->CheckIsMail(!$data2DB['email'])) 
+				$errors['email'] = "请补充邮箱地址。";
+			if (!$this->CheckIsQQ(!$data2DB['qq'])) 
+				$errors['qq'] = "忘记填写QQ号码了吗。";
+			if (!$data2DB['cur_province']) 
+				$errors['cur_province'] = "您的现居住地是那里呢。";
+			if (!$data2DB['cur_city']) 
+				$errors['cur_city'] = "您的现居住地是那里呢。";
+			if (!$data2DB['cur_addr']) 
+				$errors['cur_addr'] = "您的现居住地是那里呢。";
+			if (!CheckIsPostalNumber($data2DB['post_code'])) 
+				$errors['post_code'] = "请输入您的邮编。";
+			if (!preg_match("/^[\x{0391}-\x{FFE5}]{2,4}+$/u", $data2DB['family_title'])) 
+				$errors['family_title'] = "请输入正确的称谓";
+			if (!preg_match("/^[\x{0391}-\x{FFE5}]{2,4}+$/u", $data2DB['family_name'])) 
+				$errors['family_name'] = "请输入正确的家人姓名";
+			if (!$this->CheckIsInput($data2DB['family_contact'])) 
+				$errors['family_contact'] = "请输入正确的家人联系方式";
+			if (!$this->CheckIsInput($data2DB['family_workplace'])) 
+				$errors['family_workplace'] = "请输入正确的家人工作单位";
+			if (!$this->CheckIsInput($data2DB['family_addr'])) 
+				$errors['family_addr'] = "请输入正确的家人地址";
+			if (!preg_match("/^[\x{0391}-\x{FFE5}]{2,4}+$/u", $data2DB['urgent_title'])) 
+				$errors['urgent_title'] = "请输入正确的紧急联系人称谓";
+			if (!preg_match("/^[\x{0391}-\x{FFE5}]{2,4}+$/u", $data2DB['urgent_name'])) 
+				$errors['urgent_name'] = "请输入正确的紧急联系人姓名";
+			if (!$this->CheckIsInput($data2DB['urgent_contact'])) 
+				$errors['urgent_contact'] = "请输入正确的紧急联系人姓名";
+			if (!$this->CheckIsInput($data2DB['urgent_workplace'])) 
+				$errors['urgent_workplace'] = "请输入正确的紧急联系人工作单位";
+			//is_disability
+			if (!$this->CheckIsInput($data2DB['is_experience'])) 
+				$errors['is_experience'] = "我们想知道您是否有支教经验。";				
+			if (!$this->CheckIsInput($data2DB['predict_deadline'])) 
+				$errors['predict_deadline'] = "请填写申请的支教期限";	
+			if (!$this->CheckIsInput($data2DB['begin_date'])) 
+				$errors['begin_date'] = "需要填写计划的支教时间。";	
+			//cur_status			
+			//cur_income			
+			//info_from			
+			//Q1					
+			//Q2					
+			//Q3					
+			//Q4					
+		}
+		if ($errors) {
+				$ret['extra']['errors'] = $errors;
+				core::json($ret);
+		}
+		
+		$DB = new MySql(['MODE' => 'WRITE' => , 'DEBUG' => DEBUG]);
+		$ip = new IP(['ONLYIP' => true, 'ECHO' => false]);
+		
+		$exec = $DB->insert('user_info' , $data2DB);
+		
         if ($exec) {
             if ($this->args['DEBUG']) {
                 $error['title'] = "调试信息";
@@ -360,11 +260,11 @@ class Ticket extends Safe
             }
         } else {
             //若失败插入失败查询
-            $sql = "INSERT INTO `error` (`id` ,`username`, `qq`, `phone`, `ip`, `date`) VALUES (NULL, '$FullName', '$QQNumber', '$CellPhone', " . ip2long($ip->result) . ", CURRENT_TIMESTAMP);";
-            $DB->query($sql);
+			//$sql = "INSERT INTO `error` (`id` ,`username`, `qq`, `phone`, `ip`, `date`) VALUES (NULL, '$FullName', '$QQNumber', '$CellPhone|$FullName', '$QQNumber', '$CellPhone||', " . ip2long($ip->result) . ", CURRENT_TIMESTAMP);";
+            //$DB->query($sql);
             $ret['extra']['desc'] = "提交数据出现问题。";
             $ret['extra']['code'] = 500;
             core::json($ret);
         }
-    }
+	}
 }
