@@ -54,14 +54,15 @@ class Route extends Safe
             }
         }
         // 第二次进行正则匹配
-        foreach ($RouteRegexpRules as $rule => $execute) {
-            $regexp = '/^' . str_replace('/', '\/', $rule) . '$/';
-            if (preg_match($regexp, $uri)) {
-                app::$execute();
+		if ($RouteRegexpRules)
+			foreach ($RouteRegexpRules as $rule => $execute) {
+				$regexp = '/^' . str_replace('/', '\/', $rule) . '$/';
+				if (preg_match($regexp, $uri)) {
+					app::$execute();
 
-                return true;
-            }
-        }
+					return true;
+				}
+			}
 
         return false;
     }

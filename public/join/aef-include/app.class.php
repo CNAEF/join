@@ -34,7 +34,10 @@ class App extends Safe
      */
     private function init_route()
     {
+		route::register('/join', 'join');
+		
         route::register('/', 'index');
+		
 
         new Route();
     }
@@ -71,7 +74,8 @@ class App extends Safe
      */
     public function join()
     {
-        return new Join(['header' => self::get_page_meta('join')]);
+		//exit('test');
+        return new Ticket(['header' => self::get_page_meta('join')]);
     }
 
     public function hi_cat()

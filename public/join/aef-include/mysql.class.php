@@ -68,7 +68,7 @@ class MySQL extends Safe
                 core::json($error);
             }
         }
-		$DB->query("SET NAMES utf8");
+		$this->query("SET NAMES utf8");
     }
 
     /**
@@ -115,9 +115,9 @@ class MySQL extends Safe
 		foreach ($data as $key => $value) {
 			$safeData['`' . $key . '`'] = $escape ? $this->escapeSQL($value) : $value;
 		}
-		$sql  = 'INSERT INTO `'.$table.'` (`';
-		$sql .= implode("`,`", array_keys($safeData));
-		$sql .= '`) VALUES (\'';
+		$sql  = 'INSERT INTO `'.$table.'` (';
+		$sql .= implode(",", array_keys($safeData));
+		$sql .= ') VALUES (\'';
 		$sql .= implode("','", $safeData);
 		$sql .= '\')';
 		return $this->query($sql);

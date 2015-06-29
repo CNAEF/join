@@ -59,10 +59,12 @@ class Ticket extends Safe
         return (trim($str)) ? true : false;
     }
 
+	/*
     private function CheckIsPostalNumber($str)
     {
         return (preg_match("/^([0-9]{6})(-[0-9]{5})?$/", $str)) ? true : false;
     }
+	
 
     private function CheckIsFixedTelephone($str)
     {
@@ -74,15 +76,18 @@ class Ticket extends Safe
         return (preg_match("/13[0-9]{9}|15[0|1|2|3|5|6|7|8|9]\d{8}|18[0|5|6|7|8|9]\d{8}/", $str)) ? true : false;
     }
 
+	*/
     private function CheckIsMail($str)
     {
         return filter_var($str, FILTER_VALIDATE_EMAIL);
     }
 
+	/*
     private function CheckIsQQ($str)
     {
         return (preg_match("/^[1-9][0-9]{4,}$/", $str)) ? true : false;
     }
+	*/
 	
 	private function result() 
 	{
@@ -153,91 +158,101 @@ class Ticket extends Safe
 			'?time				|								|1.time					|',
 		);
 		$data2DB = $errors  = [];
-		foreach ($map as $key=>$value) {
+		foreach ($mapping as $key=>$value) {
 			$arr = explode('|', $value);
 			$index = str_replace('?', '', trim($arr[0]));
+			//echo $index;
 			if (strpos('_', $index) === 0)
 				continue;
-			$data2DB[$index] = $$index;
-
-			if (!preg_match("/^[\x{0391}-\x{FFE5}]{2,4}+$/u", $data2DB['name']))
-				$errors['name'] = "请输入正确的名字。";
-			if (strtotime($data2DB['birthday']) < 18) 
-				$errors['birthday'] = "目前只允许成年人进行提交。";
-			if (!in_array($data2DB['sex'], [1, 2])) 
-				$errors['sex'] = "性别必须要明确。";
-			if (!in_array($data2DB['married'], [1, 2])) 
-				$errors['married'] = "我们想了解一下您的婚姻情况。";
-			if (!in_array($data2DB['edu_level'], [1, 2, 3, 4, 5, 6, 7])) 
-				$errors['edu_level'] = "请选择您的接受教育程度。";
-			if (!$this->CheckIsChinese($data2DB['hometown_province'])) 
-				$errors['hometown_province'] = "请填写您的籍贯。";
-			if (!$this->CheckIsChinese($data2DB['hometown_city'])) 
-				$errors['hometown_city'] = "请填写您的籍贯。";
-			if (!$data2DB['id_num'])
-				$errors['id_num'] = "请填写您的身份证号码。";
-			if (!$data2DB['edu_university'])
-				$errors['edu_university'] = "请填写您的毕业院校。";
-			if (!$data2DB['profession'])
-				$errors['profession'] = "请填写您的专业。";
-			//special			
-			if (!$data2DB['work'])
-				$errors['work'] = "请填写您的职业。";
-			if (!$data2DB['work_experience'])
-				$errors['work_experience'] = "请完善您的工作经历。";			
-			if (!$this->CheckIsCellPhone(!$data2DB['phone'])) 
-				$errors['phone'] = "请填写正确的手机号码。";
-			if (!$this->CheckIsMail(!$data2DB['email'])) 
-				$errors['email'] = "请补充邮箱地址。";
-			if (!$this->CheckIsQQ(!$data2DB['qq'])) 
-				$errors['qq'] = "忘记填写QQ号码了吗。";
-			if (!$data2DB['cur_province']) 
-				$errors['cur_province'] = "您的现居住地是那里呢。";
-			if (!$data2DB['cur_city']) 
-				$errors['cur_city'] = "您的现居住地是那里呢。";
-			if (!$data2DB['cur_addr']) 
-				$errors['cur_addr'] = "您的现居住地是那里呢。";
-			if (!CheckIsPostalNumber($data2DB['post_code'])) 
-				$errors['post_code'] = "请输入您的邮编。";
-			if (!preg_match("/^[\x{0391}-\x{FFE5}]{2,4}+$/u", $data2DB['family_title'])) 
-				$errors['family_title'] = "请输入正确的称谓";
-			if (!preg_match("/^[\x{0391}-\x{FFE5}]{2,4}+$/u", $data2DB['family_name'])) 
-				$errors['family_name'] = "请输入正确的家人姓名";
-			if (!$this->CheckIsInput($data2DB['family_contact'])) 
-				$errors['family_contact'] = "请输入正确的家人联系方式";
-			if (!$this->CheckIsInput($data2DB['family_workplace'])) 
-				$errors['family_workplace'] = "请输入正确的家人工作单位";
-			if (!$this->CheckIsInput($data2DB['family_addr'])) 
-				$errors['family_addr'] = "请输入正确的家人地址";
-			if (!preg_match("/^[\x{0391}-\x{FFE5}]{2,4}+$/u", $data2DB['urgent_title'])) 
-				$errors['urgent_title'] = "请输入正确的紧急联系人称谓";
-			if (!preg_match("/^[\x{0391}-\x{FFE5}]{2,4}+$/u", $data2DB['urgent_name'])) 
-				$errors['urgent_name'] = "请输入正确的紧急联系人姓名";
-			if (!$this->CheckIsInput($data2DB['urgent_contact'])) 
-				$errors['urgent_contact'] = "请输入正确的紧急联系人姓名";
-			if (!$this->CheckIsInput($data2DB['urgent_workplace'])) 
-				$errors['urgent_workplace'] = "请输入正确的紧急联系人工作单位";
-			//is_disability
-			if (!$this->CheckIsInput($data2DB['is_experience'])) 
-				$errors['is_experience'] = "我们想知道您是否有支教经验。";				
-			if (!$this->CheckIsInput($data2DB['predict_deadline'])) 
-				$errors['predict_deadline'] = "请填写申请的支教期限";	
-			if (!$this->CheckIsInput($data2DB['begin_date'])) 
-				$errors['begin_date'] = "需要填写计划的支教时间。";	
-			//cur_status			
-			//cur_income			
-			//info_from			
-			//Q1					
-			//Q2					
-			//Q3					
-			//Q4					
+			$data2DB[$index] = $data[$index];
 		}
+		//echo "<meta charset='utf-8' />";
+		//echo "<pre>";
+		//print_r($data2DB);
+		if (!$data2DB['name'])
+			$errors['name'] = "请输入正确的名字。";
+		if (!$data2DB['birthday']) 
+			$errors['birthday'] = "请填写您的出生日期。";
+		if (!in_array($data2DB['sex'], [1, 2])) 
+			$errors['sex'] = "性别必须要明确。";
+		if (!in_array($data2DB['married'], [1, 2])) 
+			$errors['married'] = "我们想了解一下您的婚姻情况。";
+		if (!in_array($data2DB['edu_level'], [1, 2, 3, 4, 5, 6, 7])) 
+			$errors['edu_level'] = "请选择您的接受教育程度。";
+		if (!$this->CheckIsChinese($data2DB['hometown_province'])) 
+			$errors['hometown_province'] = "请填写您的籍贯。";
+		if (!$this->CheckIsChinese($data2DB['hometown_city'])) 
+			$errors['hometown_city'] = "请填写您的籍贯。";
+		if (!$data2DB['id_num'])
+			$errors['id_num'] = "请填写您的身份证号码。";
+		if (!$data2DB['edu_university'])
+			$errors['edu_university'] = "请填写您的毕业院校。";
+		if (!$data2DB['profession'])
+			$errors['profession'] = "请填写您的专业。";
+		//special			
+		if (!$data2DB['work'])
+			$errors['work'] = "请填写您的职业。";
+		//work_experience			
+		if (!$data2DB['phone']) 
+			$errors['phone'] = "请填写正确的手机号码。";
+		if (!$this->CheckIsMail($data2DB['email'])) 
+			$errors['email'] = "请补充邮箱地址。";
+		if (!$data2DB['qq']) 
+			$errors['qq'] = "忘记填写QQ号码了吗。";
+		if (!$data2DB['cur_province']) 
+			$errors['cur_province'] = "您的现居住地是哪里呢。";
+		if (!$data2DB['cur_city']) 
+			$errors['cur_city'] = "您的现居住地是哪里呢。";
+		if (!$data2DB['cur_addr']) 
+			$errors['cur_addr'] = "您的现居住地是哪里呢。";
+		if (!$data2DB['post_code']) 
+			$errors['post_code'] = "请输入您的邮编。";
+		if (!$data2DB['family_title']) 
+			$errors['family_title'] = "请输入正确的称谓";
+		if (!$data2DB['family_name']) 
+			$errors['family_name'] = "请输入正确的家人姓名";
+		if (!$this->CheckIsInput($data2DB['family_contact'])) 
+			$errors['family_contact'] = "请输入正确的家人联系方式";
+		if (!$this->CheckIsInput($data2DB['family_workplace'])) 
+			$errors['family_workplace'] = "请输入正确的家人工作单位";
+		if (!$this->CheckIsInput($data2DB['family_addr'])) 
+			$errors['family_addr'] = "请输入正确的家人地址";
+		//is_disability
+		//is_experience
+		if (!$this->CheckIsInput($data2DB['predict_deadline'])) 
+			$errors['predict_deadline'] = "请填写申请的支教期限";	
+		if (!$this->CheckIsInput($data2DB['begin_date'])) 
+			$errors['begin_date'] = "需要填写计划的支教时间。";	
+		if (!$this->CheckIsInput($data2DB['cur_status'])) 
+			$errors['cur_status'] = "我们想知道您当前的状态。";	
+		if (!$this->CheckIsInput($data2DB['cur_income'])) 
+			$errors['cur_income'] = "请完善您的收入来源。";	
+		if (!$this->CheckIsInput($data2DB['info_from'])) 
+			$errors['info_from'] = "请告知我们您是如何得知该活动的。";	
+		//Q1					
+		//Q2					
+		//Q3					
+		//Q4
+		
+		$data2DB['verify_status'] = 1;
+		$data2DB['time'] = date('Y-m-d H:i:s');
+		
 		if ($errors) {
-				$ret['extra']['errors'] = $errors;
-				core::json($ret);
+			$ret['extra']['code'] = 400;
+			$ret['extra']['errors'] = $errors;
+			core::json($ret);
+		} else {
+			// todo：处理上传
+			/*
+
+				$tmp_name = $_FILES["pictures"]["tmp_name"];
+				$name = $_FILES["pictures"]["name"][$key];
+				move_uploaded_file($tmp_name, "data/$name");
+
+			 */
 		}
 		
-		$DB = new MySql(['MODE' => 'WRITE' => , 'DEBUG' => DEBUG]);
+		$DB = new MySql(['MODE' => 'WRITE' , 'DEBUG' => DEBUG]);
 		$ip = new IP(['ONLYIP' => true, 'ECHO' => false]);
 		
 		$exec = $DB->insert('user_info' , $data2DB);
@@ -260,8 +275,8 @@ class Ticket extends Safe
             }
         } else {
             //若失败插入失败查询
-			//$sql = "INSERT INTO `error` (`id` ,`username`, `qq`, `phone`, `ip`, `date`) VALUES (NULL, '$FullName', '$QQNumber', '$CellPhone|$FullName', '$QQNumber', '$CellPhone||', " . ip2long($ip->result) . ", CURRENT_TIMESTAMP);";
-            //$DB->query($sql);
+			$sql = "INSERT INTO `error` (`id` ,`name`, `qq`, `phone`, `ip`, `date`) VALUES (NULL, '$name', '$qq', '$phone', " . ip2long($ip->result) . ", CURRENT_TIMESTAMP);";
+            $DB->query($sql);
             $ret['extra']['desc'] = "提交数据出现问题。";
             $ret['extra']['code'] = 500;
             core::json($ret);

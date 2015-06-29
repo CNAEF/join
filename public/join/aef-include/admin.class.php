@@ -168,7 +168,7 @@ class Admin extends Safe
         }
         $DB = new MySql(['MODE' => 'WRITE', 'DEBUG' => true]);
         $DB->query("SET NAMES utf8");
-        $sql = "UPDATE `user_info1` SET `verify_status` = '2', `verify_admin_id`= '$aid' WHERE `id` ='$id'";
+		$sql = "UPDATE `user_info` SET `verify_status` = '2', `verify_admin_id`= '$aid' WHERE `id` ='$id'";
         $DB->query($sql);
         $data['extra']['code'] = 200;
         $data['extra']['desc'] = '操作已经执行。';
@@ -206,7 +206,7 @@ class Admin extends Safe
         }
         $DB = new MySql(['MODE' => 'WRITE', 'DEBUG' => true]);
         $DB->query("SET NAMES utf8");
-        $sql = "UPDATE `user_info1` SET `verify_status` = '3', `verify_admin_id`= '$aid' WHERE `id` ='$id'";
+        $sql = "UPDATE `user_info` SET `verify_status` = '3', `verify_admin_id`= '$aid' WHERE `id` ='$id'";
         $DB->query($sql);
         $data['extra']['code'] = 200;
         $data['extra']['desc'] = '操作已经执行。';
@@ -231,7 +231,7 @@ class Admin extends Safe
         $data = [];
         $DB = new MySql(['MODE' => 'READ', 'DEBUG' => true]);
         $DB->query("SET NAMES utf8");
-        $sql = "SELECT * FROM `user_info2` WHERE uid = $id LIMIT 0, 1";
+        $sql = "SELECT * FROM `user_info` WHERE id = $id LIMIT 0, 1";
         $result = $DB->query($sql);
         $count = $DB->num_rows($result);
         if ($count) {
@@ -240,9 +240,10 @@ class Admin extends Safe
                 //'ip' => long2ip($item['ip'])
                 $data['data'] = [
                     'id'         => $item['id'],
-                    'uid'        => $item['uid'],
+                    //'uid'        => $item['uid'],
                     'education'  => [
-                        'high'       => $item['edu_high_level'],
+						'level' => $item['edu_level']
+                        //'high'       => $item['edu_high_level'],
                         'university' => $item['edu_university_level']
                     ],
                     'work'       => $item['work_experience'],
@@ -267,8 +268,8 @@ class Admin extends Safe
                     ],
                     'form'       => $item['info_from'],
                     'question'   => [
-                        $item['Q1'], $item['Q2'], $item['Q3'], $item['Q4'], $item['Q5'], $item['Q6'],
-                        $item['Q7'], $item['Q8'], $item['Q9'], $item['Q10'], $item['Q11']
+                        $item['Q1'], $item['Q2'], $item['Q3'], $item['Q4']//, $item['Q5'], $item['Q6'],
+                        //$item['Q7'], $item['Q8'], $item['Q9'], $item['Q10'], $item['Q11']
                     ]
                 ];
                 $data['extra']['code'] = 200;
@@ -309,16 +310,16 @@ class Admin extends Safe
 
         switch ($type) {
             case 1://全部
-                $sql = "SELECT * FROM `user_info1` ORDER BY id DESC LIMIT $cur_page, $pre_page";
+                $sql = "SELECT * FROM `user_info` ORDER BY id DESC LIMIT $cur_page, $pre_page";
                 break;
             case 2://未审核
-                $sql = "SELECT * FROM `user_info1` WHERE `verify_status` = '1' ORDER BY id DESC LIMIT $cur_page, $pre_page";
+                $sql = "SELECT * FROM `user_info` WHERE `verify_status` = '1' ORDER BY id DESC LIMIT $cur_page, $pre_page";
                 break;
             case 3://已通过
-                $sql = "SELECT * FROM `user_info1` WHERE `verify_status` = '2' ORDER BY id DESC LIMIT $cur_page, $pre_page";
+                $sql = "SELECT * FROM `user_info` WHERE `verify_status` = '2' ORDER BY id DESC LIMIT $cur_page, $pre_page";
                 break;
             case 4://已拒绝
-                $sql = "SELECT * FROM `user_info1` WHERE `verify_status` = '3' ORDER BY id DESC LIMIT $cur_page, $pre_page";
+                $sql = "SELECT * FROM `user_info` WHERE `verify_status` = '3' ORDER BY id DESC LIMIT $cur_page, $pre_page";
                 break;
         }
         $result = $DB->query($sql);
@@ -336,23 +337,24 @@ class Admin extends Safe
                 //'ip' => long2ip($item['ip'])
                 array_push($post, [
                     'id'        => $item['id'],
-                    'username'  => $item['username'],
+                    'username'  => $item['name'],
                     'age'       => $item['user_age'],
-                    'sex'       => $item['user_sex'],
-                    'married'   => $item['user_is_married'],
-                    'education' => $item['user_edu_level'],
-                    'job'       => $item['user_profession'],
+					'birthday'  => $item['birthday'],
+                    'sex'       => $item['sex'],
+                    'married'   => $item['married'],
+                    'education' => $item['edu_level'],
+                    'job'       => $item['profession'],
                     'address'   => [
-                        'live'      => $item['user_cur_addr'],
-                        'hometown'  => $item['user_hometown'],
-                        'post_addr' => $item['user_post_addr'],
-                        'post_code' => $item['user_post_code'],
+                        'live'      => $item['cur_addr'],
+                        'hometown'  => $item['hometown_province'] + $item['hometown_city'],
+                        'post_addr' => $item['post_addr'],
+                        'post_code' => $item['post_code'],
                     ],
-                    'phone'     => $item['user_phone'],
-                    'mobile'    => $item['user_mobile'],
-                    'email'     => $item['user_email'],
-                    'qq'        => $item['user_qq'],
-                    'status'    => $item['user_status'],
+                    'phone'     => $item['phone'],
+                    'mobile'    => $item['mobile'],
+                    'email'     => $item['email'],
+                    'qq'        => $item['qq'],
+                    //'status'    => $item['status'],
                     'time'      => $item['time'],
                     'verify'    => [
                         'admin'  => $item['verify_admin_id'],
@@ -365,16 +367,16 @@ class Admin extends Safe
 
             switch ($type) {
                 case 1://全部
-                    $sql = "SELECT COUNT( id ) FROM  `user_info1` WHERE 1 LIMIT 0 , 1";
+                    $sql = "SELECT COUNT( id ) FROM  `user_info` WHERE 1 LIMIT 0 , 1";
                     break;
                 case 2://未审核
-                    $sql = "SELECT COUNT( id ) FROM  `user_info1` WHERE `verify_status` = '1' LIMIT 0 , 1";
+                    $sql = "SELECT COUNT( id ) FROM  `user_info` WHERE `verify_status` = '1' LIMIT 0 , 1";
                     break;
                 case 3://已通过
-                    $sql = "SELECT COUNT( id ) FROM  `user_info1` WHERE `verify_status` = '2' LIMIT 0 , 1";
+                    $sql = "SELECT COUNT( id ) FROM  `user_info` WHERE `verify_status` = '2' LIMIT 0 , 1";
                     break;
                 case 4://已拒绝
-                    $sql = "SELECT COUNT( id ) FROM  `user_info1` WHERE `verify_status` = '3' LIMIT 0 , 1";
+                    $sql = "SELECT COUNT( id ) FROM  `user_info` WHERE `verify_status` = '3' LIMIT 0 , 1";
                     break;
             }
 
