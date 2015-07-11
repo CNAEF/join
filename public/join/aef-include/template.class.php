@@ -42,6 +42,7 @@ class Template extends RainTPL
             }
         }
 
+/*
         if (isset($params['nav'])) {
             $params['header']['assets'] = C_ASSETS_PREFIX;
             if (isset($params['nav_file'])) {
@@ -50,7 +51,7 @@ class Template extends RainTPL
                 $this->nav($params['nav']);
             }
         }
-
+*/
         if (isset($params['body'])) {
             $params['header']['assets'] = C_ASSETS_PREFIX;
             if (isset($params['body_file'])) {
@@ -112,12 +113,12 @@ class Template extends RainTPL
         if ($empty) {
             return true;
         }
-        if (file_exists(FILE_PREFIX . 'content/theme/' . THEME . '/')) {
-            RainTPL::$tpl_dir = FILE_PREFIX . 'content/theme/' . THEME . '/';
-            RainTPL::$cache_dir = FILE_PREFIX . 'content/theme/' . THEME . '_cache/';
+        if (file_exists(dirname(__FILE__) . '/../' . FILE_PREFIX . 'content/theme/' . THEME . '/')) {
+            RainTPL::$tpl_dir = dirname(__FILE__) . '/../' . FILE_PREFIX . 'content/theme/' . THEME . '/';
+            RainTPL::$cache_dir = dirname(__FILE__) . '/../' . FILE_PREFIX . 'content/theme/' . THEME . '_cache/';
         } else {
-            RainTPL::$tpl_dir = FILE_PREFIX . 'content/theme/default/';
-            RainTPL::$cache_dir = FILE_PREFIX . 'content/theme/default_cache/';
+            RainTPL::$tpl_dir = dirname(__FILE__) . '/../' . FILE_PREFIX . 'content/theme/default/';
+            RainTPL::$cache_dir = dirname(__FILE__) . '/../' . FILE_PREFIX . 'content/theme/default_cache/';
         }
 
         RainTPL::$tpl_ext = 'tpl.php';

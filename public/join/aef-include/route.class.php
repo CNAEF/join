@@ -47,19 +47,19 @@ class Route extends Safe
 
         // 第一次匹配完全相等的
         foreach ($RouteSimpleRules as $rule => $execute) {
+       
             if ($rule === $uri) {
                 app::$execute();
-
                 return true;
             }
         }
+
         // 第二次进行正则匹配
 		if ($RouteRegexpRules)
 			foreach ($RouteRegexpRules as $rule => $execute) {
-				$regexp = '/^' . str_replace('/', '\/', $rule) . '$/';
+				$regexp = '/^' . str_replace(['/', '?'], ['\/', '\?'], $rule) . '/';
 				if (preg_match($regexp, $uri)) {
 					app::$execute();
-
 					return true;
 				}
 			}

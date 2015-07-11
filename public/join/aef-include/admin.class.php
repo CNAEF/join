@@ -242,7 +242,7 @@ class Admin extends Safe
                     'id'         => $item['id'],
                     //'uid'        => $item['uid'],
                     'education'  => [
-						'level' => $item['edu_level']
+                        'level' => $item['edu_level'],
                         //'high'       => $item['edu_high_level'],
                         'university' => $item['edu_university_level']
                     ],
@@ -408,8 +408,16 @@ class Admin extends Safe
      */
     private function index()
     {
-        $tpl = file_get_contents(FILE_PREFIX . 'content/' . FILE_PREFIX . 'theme/index.html');
-        echo $tpl;
+        $params = func_get_args()[0];
+        $params['header'] = [
+            //'pageName' => 'join',
+            'assets' => '/join/aef-content/theme/default/assets'
+        ];
+        $params['body'] = [];
+        $params['body_file'] = 'index';
+        $params['footer'] = [];
+
+        new Template($params);
     }
 
     /**
