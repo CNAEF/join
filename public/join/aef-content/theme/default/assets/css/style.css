@@ -1,0 +1,45 @@
+h1#logo {
+    margin: 20px 0 -20px 0;
+    color: #8A8A8A;
+}
+
+#control-nav {
+    margin-bottom: 0;
+}
+
+#data-table {
+    border: 1px solid #DDD;
+    border-top: none;
+    word-break: break-word;
+    font-size: 12px;
+}
+
+#data-table tbody tr{
+    cursor: pointer;
+}
+.person-table{
+    font-size: 12px;
+}
+.person-table th{
+    background-color: #eee;
+}
+.user-forbidden{
+    margin-left: 20px;
+}
+td.loading-text {
+    text-indent: .5em;
+}
+
+#page-loader {
+    border-radius: 0;
+    position: absolute;
+    top: 0;
+    left: 0;
+    margin: 0;
+    width: 100%;
+    height: 5px;
+}
+
+.script-modal .modal-header h3{
+    color: #08c;
+}

@@ -118,7 +118,6 @@ class Admin extends Safe
             exit;
         } else {
             $DB = new MySql(['MODE' => 'READ', 'DEBUG' => true]);
-            $DB->query("SET NAMES utf8");
             $user = mysql_real_escape_string($_SERVER['PHP_AUTH_USER']);
             $pass = mysql_real_escape_string($_SERVER['PHP_AUTH_PW']);
             $pass = md5($pass . C_SECRET);
@@ -167,7 +166,6 @@ class Admin extends Safe
             core::json($data);
         }
         $DB = new MySql(['MODE' => 'WRITE', 'DEBUG' => true]);
-        $DB->query("SET NAMES utf8");
 		$sql = "UPDATE `user_info` SET `verify_status` = '2', `verify_admin_id`= '$aid' WHERE `id` ='$id'";
         $DB->query($sql);
         $data['extra']['code'] = 200;
@@ -205,7 +203,6 @@ class Admin extends Safe
             Core::json($data);
         }
         $DB = new MySql(['MODE' => 'WRITE', 'DEBUG' => true]);
-        $DB->query("SET NAMES utf8");
         $sql = "UPDATE `user_info` SET `verify_status` = '3', `verify_admin_id`= '$aid' WHERE `id` ='$id'";
         $DB->query($sql);
         $data['extra']['code'] = 200;
@@ -230,7 +227,6 @@ class Admin extends Safe
     {
         $data = [];
         $DB = new MySql(['MODE' => 'READ', 'DEBUG' => true]);
-        $DB->query("SET NAMES utf8");
         $sql = "SELECT * FROM `user_info` WHERE id = $id LIMIT 0, 1";
         $result = $DB->query($sql);
         $count = $DB->num_rows($result);
@@ -243,8 +239,8 @@ class Admin extends Safe
                     //'uid'        => $item['uid'],
                     'education'  => [
                         'level' => $item['edu_level'],
-                        //'high'       => $item['edu_high_level'],
-                        'university' => $item['edu_university_level']
+                        'high'       => $item['_edu_high_level'],
+                        'university' => $item['edu_university']
                     ],
                     'work'       => $item['work_experience'],
                     'tech'       => $item['tech_experience'],
@@ -262,14 +258,32 @@ class Admin extends Safe
                     ],
                     'disability' => $item['is_disability'],
                     'experience' => $item['is_experience'],
+                    'photo'       => [
+                        'id' => $item['id_photo'],
+                        'user' => $item['user_photo'],
+                        'edu'   => $item['edu_photo']
+                    ],
                     'date'       => [
-                        'predict' => $item['predict_deadline'],
-                        'begin'   => $item['begin_date']
+                        'predict' => $item['predict_deadline'] == '2' ? '一学年' : '一学期',
+                        'begin'   => $item['begin_date'] == '2' ? '春季' : '秋季'
                     ],
                     'form'       => $item['info_from'],
                     'question'   => [
-                        $item['Q1'], $item['Q2'], $item['Q3'], $item['Q4']//, $item['Q5'], $item['Q6'],
-                        //$item['Q7'], $item['Q8'], $item['Q9'], $item['Q10'], $item['Q11']
+                        $item['Q1'], 
+                        $item['Q2'], 
+                        $item['Q3'], 
+                        $item['Q4'],
+                        $item['_Q1'], 
+                        $item['_Q2'], 
+                        $item['_Q3'], 
+                        $item['_Q4'],
+                        $item['_Q5'], 
+                        $item['_Q6'], 
+                        $item['_Q7'], 
+                        $item['_Q8'],
+                        $item['_Q9'], 
+                        $item['_Q10'], 
+                        $item['_Q11']
                     ]
                 ];
                 $data['extra']['code'] = 200;
@@ -299,7 +313,6 @@ class Admin extends Safe
     {
         $data = [];
         $DB = new MySql(['MODE' => 'READ', 'DEBUG' => true]);
-        $DB->query("SET NAMES utf8");
 
         $pre_page = 100;
         $cur_page = $page;
@@ -313,13 +326,9 @@ class Admin extends Safe
                 $sql = "SELECT * FROM `user_info` ORDER BY id DESC LIMIT $cur_page, $pre_page";
                 break;
             case 2://未审核
-                $sql = "SELECT * FROM `user_info` WHERE `verify_status` = '1' ORDER BY id DESC LIMIT $cur_page, $pre_page";
-                break;
             case 3://已通过
-                $sql = "SELECT * FROM `user_info` WHERE `verify_status` = '2' ORDER BY id DESC LIMIT $cur_page, $pre_page";
-                break;
             case 4://已拒绝
-                $sql = "SELECT * FROM `user_info` WHERE `verify_status` = '3' ORDER BY id DESC LIMIT $cur_page, $pre_page";
+                $sql = "SELECT * FROM `user_info` WHERE `verify_status` = '".($type-1)."' ORDER BY id DESC LIMIT $cur_page, $pre_page";
                 break;
         }
         $result = $DB->query($sql);
@@ -327,6 +336,7 @@ class Admin extends Safe
         $post = [];
         if ($count) {
             while ($item = $DB->fetch_array($result)) {
+                /*
                 if ($item['id'] >= 3680 && $item['id'] <= 6706) {
                     //有一段数据库是花的，兼容一下吧
                     $tmp = $item['user_cur_addr'];
@@ -334,24 +344,28 @@ class Admin extends Safe
                     $item['user_profession'] = $tmp;
                     unset($tmp);
                 }
+                */
                 //'ip' => long2ip($item['ip'])
                 array_push($post, [
                     'id'        => $item['id'],
+                    'id_num'        => $item['id_num'],
                     'username'  => $item['name'],
-                    'age'       => $item['user_age'],
-					'birthday'  => $item['birthday'],
+                    'age'       => $item['_age'] ? $item['_age'] : '',
+                    'birthday'  => $item['birthday'],
                     'sex'       => $item['sex'],
                     'married'   => $item['married'],
                     'education' => $item['edu_level'],
+                    'edu_university' => $item['edu_university'],
+                    '_edu_high_level' => $item['_edu_high_level'],
                     'job'       => $item['profession'],
                     'address'   => [
-                        'live'      => $item['cur_addr'],
+                        'live'      => $item['cur_province'] . ' ' . $item['cur_city'],
                         'hometown'  => $item['hometown_province'] + $item['hometown_city'],
-                        'post_addr' => $item['post_addr'],
+                        'post_addr' => $item['cur_addr'],
                         'post_code' => $item['post_code'],
                     ],
                     'phone'     => $item['phone'],
-                    'mobile'    => $item['mobile'],
+                    //'mobile'    => $item['mobile'],
                     'email'     => $item['email'],
                     'qq'        => $item['qq'],
                     //'status'    => $item['status'],
@@ -362,7 +376,6 @@ class Admin extends Safe
                         'status' => $item['verify_status'],
                     ],
                 ]);
-
             }
 
             switch ($type) {
@@ -370,16 +383,11 @@ class Admin extends Safe
                     $sql = "SELECT COUNT( id ) FROM  `user_info` WHERE 1 LIMIT 0 , 1";
                     break;
                 case 2://未审核
-                    $sql = "SELECT COUNT( id ) FROM  `user_info` WHERE `verify_status` = '1' LIMIT 0 , 1";
-                    break;
                 case 3://已通过
-                    $sql = "SELECT COUNT( id ) FROM  `user_info` WHERE `verify_status` = '2' LIMIT 0 , 1";
-                    break;
                 case 4://已拒绝
-                    $sql = "SELECT COUNT( id ) FROM  `user_info` WHERE `verify_status` = '3' LIMIT 0 , 1";
+                    $sql = "SELECT COUNT( id ) FROM  `user_info` WHERE `verify_status` = '".($type-1)."' LIMIT 0 , 1";
                     break;
             }
-
 
             $page_count = $DB->fetch_row($DB->query($sql));
             $page_count = $page_count[0];
@@ -410,7 +418,6 @@ class Admin extends Safe
     {
         $params = func_get_args()[0];
         $params['header'] = [
-            //'pageName' => 'join',
             'assets' => '/join/aef-content/theme/default/assets'
         ];
         $params['body'] = [];
@@ -433,7 +440,6 @@ class Admin extends Safe
             Core::json($data);
         }
         $DB = new MySql(['MODE' => 'WRITE', 'DEBUG' => true]);
-        $DB->query("SET NAMES utf8");
         $sql = "INSERT INTO `logs` (`id`, `content`, `date`) VALUES (NULL, '$str', CURRENT_TIMESTAMP)";
         $DB->query($sql);
         $data['extra']['code'] = 200;
@@ -448,7 +454,6 @@ class Admin extends Safe
     {
         $data = [];
         $DB = new MySql(['MODE' => 'READ', 'DEBUG' => true]);
-        $DB->query("SET NAMES utf8");
 
         $pre_page = 100;
         $cur_page = $page;

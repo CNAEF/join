@@ -5,13 +5,14 @@
     <tr>
         <th>姓名</th>
         <th>年龄</th>
+        <th>生日</th>
         <th>性别</th>
         <th>婚否</th>
         <th>学历</th>
         <th>职业</th>
         <th>居住</th>
         <th>邮箱</th>
-        <th>QQ</th>
+        <th>QQ/微信</th>
         <th>添加时间</th>
     </tr>
     </thead>
@@ -37,13 +38,14 @@
     <tr>
         <th>姓名</th>
         <th>年龄</th>
+        <th>生日</th>
         <th>性别</th>
         <th>婚否</th>
         <th>学历</th>
         <th>职业</th>
         <th>居住</th>
         <th>邮箱</th>
-        <th>QQ</th>
+        <th>QQ/微信</th>
         <th>添加时间</th>
     </tr>
     </thead>

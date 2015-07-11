@@ -58,37 +58,11 @@ class Ticket extends Safe
     {
         return (trim($str)) ? true : false;
     }
-
-	/*
-    private function CheckIsPostalNumber($str)
-    {
-        return (preg_match("/^([0-9]{6})(-[0-9]{5})?$/", $str)) ? true : false;
-    }
-	
-
-    private function CheckIsFixedTelephone($str)
-    {
-        return (preg_match("/^(0?(([1-9]\d)|([3-9]\d{2}))-?)?\d{7,8}$/", $str)) ? true : false;
-    }
-
-    private function CheckIsCellPhone($str)
-    {
-        return (preg_match("/13[0-9]{9}|15[0|1|2|3|5|6|7|8|9]\d{8}|18[0|5|6|7|8|9]\d{8}/", $str)) ? true : false;
-    }
-
-	*/
+    
     private function CheckIsMail($str)
     {
         return filter_var($str, FILTER_VALIDATE_EMAIL);
     }
-
-	/*
-    private function CheckIsQQ($str)
-    {
-        return (preg_match("/^[1-9][0-9]{4,}$/", $str)) ? true : false;
-    }
-	*/
-	
 	private function result() 
 	{
 		$data = $_REQUEST;
@@ -242,16 +216,39 @@ class Ticket extends Safe
 			$ret['extra']['errors'] = $errors;
 			core::json($ret);
 		} else {
-			// todo：处理上传
-			/*
-
-				$tmp_name = $_FILES["pictures"]["tmp_name"];
-				$name = $_FILES["pictures"]["name"][$key];
-				move_uploaded_file($tmp_name, "data/$name");
-
-			 */
+			foreach (['id_photo', 'user_photo', 'edu_photo'] as $k => $v) {
+				if (!in_array($_FILES[$v]['type'], ['image/gif', 'image/jpeg', 'image/png', 'image/pjpeg'])) {
+					$errors[$v] = "请上传jpg,png,gif格式的图片文件。";	
+				}
+				if ($_FILES[$v]["size"] / 1024 > 1024 * 2) {
+					$errors[$v] = "请上传2Mb以下的文件。";
+				}
+			}
+			if ($errors) {
+				$ret['extra']['code'] = 400;
+				$ret['extra']['errors'] = $errors;
+				core::json($ret);
+			}
+			foreach (['id_photo', 'user_photo', 'edu_photo'] as $k => $v) {
+				switch ($_FILES[$v]['type']) {
+					case 'image/gif':
+						$ext = 'gif';
+						break;
+					case 'image/jpeg':
+					case 'image/pjpeg':
+						$ext = 'jpg';
+						break;
+					case 'image/png':
+						$ext = 'png';
+						break;
+				}
+				$tmp_name = $_FILES[$v]["tmp_name"];
+				$name = time() . '.' . $ext;
+				move_uploaded_file($tmp_name, dirname(__FILE__) . "/../aef-upload/{$v}/{$name}");
+				$data2DB[$v] = $name;
+			}
 		}
-		
+
 		$DB = new MySql(['MODE' => 'WRITE' , 'DEBUG' => DEBUG]);
 		$ip = new IP(['ONLYIP' => true, 'ECHO' => false]);
 		
