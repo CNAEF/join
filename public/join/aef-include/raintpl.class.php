@@ -721,7 +721,7 @@ class RainTPL extends Debug
 
             $url = '(?:(?:\\{.*?\\})?[^{}]*?)*?'; // allow " inside {} for cases in which url contains {function="foo()"}
 
-            $exp = [];
+            $exp = array();
 
             $tags = array_intersect(array("link", "a"), self::$path_replace_list);
             $exp[] = '/<(' . join('|', $tags) . ')(.*?)(href)="(' . $url . ')"/i';
