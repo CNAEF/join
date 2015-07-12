@@ -16,7 +16,7 @@ if (!defined('FILE_PREFIX')) include "../error-forbidden.php";
 
 class Template extends RainTPL
 {
-    private $args = [];
+    private $args = array();
     private $process_time_start;
     private $process_time_end;
     protected $tpl = null;

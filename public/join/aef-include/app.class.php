@@ -48,7 +48,7 @@ class App extends Safe
      */
     public function index()
     {
-        return new Index(['header' => self::get_page_meta('index')]);
+        return new Index(array('header' => self::get_page_meta('index')));
     }
 
     /**
@@ -59,7 +59,7 @@ class App extends Safe
      * @return Contact
      */
     public function contact(){
-        return new Contact(['header' => self::get_page_meta('contact')]);
+        return new Contact(array('header' => self::get_page_meta('contact')));
     }
 
     /**
@@ -71,12 +71,12 @@ class App extends Safe
      */
     public function join()
     {
-        return new Ticket(['header' => '']);
+        return new Ticket(array('header' => ''));
     }
     
     public function admin()
     {
-        return new Admin(['header' => '']);
+        return new Admin(array('header' => ''));
     }
 
     public function page404()

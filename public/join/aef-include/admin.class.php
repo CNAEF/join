@@ -165,7 +165,7 @@ class Admin extends Safe
             $data['extra']['desc'] = '没有权限。';
             core::json($data);
         }
-        $DB = new MySql(['MODE' => 'WRITE', 'DEBUG' => true]);
+        $DB = new MySql(array('MODE' => 'WRITE', 'DEBUG' => true));
 		$sql = "UPDATE `user_info` SET `verify_status` = '2', `verify_admin_id`= '$aid' WHERE `id` ='$id'";
         $DB->query($sql);
         $data['extra']['code'] = 200;
@@ -202,7 +202,7 @@ class Admin extends Safe
             $data['extra']['desc'] = '没有权限。';
             Core::json($data);
         }
-        $DB = new MySql(['MODE' => 'WRITE', 'DEBUG' => true]);
+        $DB = new MySql(array('MODE' => 'WRITE', 'DEBUG' => true));
         $sql = "UPDATE `user_info` SET `verify_status` = '3', `verify_admin_id`= '$aid' WHERE `id` ='$id'";
         $DB->query($sql);
         $data['extra']['code'] = 200;
@@ -226,7 +226,7 @@ class Admin extends Safe
     private function userinfo($id = 1)
     {
         $data = [];
-        $DB = new MySql(['MODE' => 'READ', 'DEBUG' => true]);
+        $DB = new MySql(array('MODE' => 'READ', 'DEBUG' => true));
         $sql = "SELECT * FROM `user_info` WHERE id = $id LIMIT 0, 1";
         $result = $DB->query($sql);
         $count = $DB->num_rows($result);
@@ -234,41 +234,41 @@ class Admin extends Safe
             $item = $DB->fetch_array($result);
             if ($item) {
                 //'ip' => long2ip($item['ip'])
-                $data['data'] = [
+                $data['data'] = array(
                     'id'         => $item['id'],
                     //'uid'        => $item['uid'],
-                    'education'  => [
+                    'education'  => array(
                         'level' => $item['edu_level'],
                         'high'       => $item['_edu_high_level'],
                         'university' => $item['edu_university']
-                    ],
+                    ),
                     'work'       => $item['work_experience'],
                     'tech'       => $item['tech_experience'],
-                    'family'     => [
+                    'family'     => array(
                         'title'     => $item['family_title'],
                         'name'      => $item['family_name'],
                         'contact'   => $item['family_contact'],
                         'workplace' => $item['family_workplace']
-                    ],
-                    'urgent'     => [
+                    ),
+                    'urgent'     => array(
                         'title'     => $item['urgent_title'],
                         'name'      => $item['urgent_name'],
                         'contact'   => $item['urgent_contact'],
                         'workplace' => $item['urgent_workplace']
-                    ],
+                    ),
                     'disability' => $item['is_disability'],
                     'experience' => $item['is_experience'],
-                    'photo'       => [
+                    'photo'       => array(
                         'id' => $item['id_photo'],
                         'user' => $item['user_photo'],
                         'edu'   => $item['edu_photo']
-                    ],
-                    'date'       => [
+                    ),
+                    'date'       => array(
                         'predict' => $item['predict_deadline'] == '2' ? '一学年' : '一学期',
                         'begin'   => $item['begin_date'] == '2' ? '春季' : '秋季'
-                    ],
+                    ),
                     'form'       => $item['info_from'],
-                    'question'   => [
+                    'question'   => array(
                         $item['Q1'], 
                         $item['Q2'], 
                         $item['Q3'], 
@@ -284,8 +284,8 @@ class Admin extends Safe
                         $item['_Q9'], 
                         $item['_Q10'], 
                         $item['_Q11']
-                    ]
-                ];
+                    )
+                );
                 $data['extra']['code'] = 200;
                 $data['extra']['desc'] = '获取用户信息成功。';
             }
@@ -311,8 +311,8 @@ class Admin extends Safe
      */
     private function query($page = 1, $type = 1)
     {
-        $data = [];
-        $DB = new MySql(['MODE' => 'READ', 'DEBUG' => true]);
+        $data = array();
+        $DB = new MySql(array('MODE' => 'READ', 'DEBUG' => true));
 
         $pre_page = 100;
         $cur_page = $page;
@@ -333,7 +333,7 @@ class Admin extends Safe
         }
         $result = $DB->query($sql);
         $count = $DB->num_rows($result);
-        $post = [];
+        $post = array();
         if ($count) {
             while ($item = $DB->fetch_array($result)) {
                 /*
@@ -346,7 +346,7 @@ class Admin extends Safe
                 }
                 */
                 //'ip' => long2ip($item['ip'])
-                array_push($post, [
+                array_push($post, array(
                     'id'        => $item['id'],
                     'id_num'        => $item['id_num'],
                     'username'  => $item['name'],
@@ -358,24 +358,24 @@ class Admin extends Safe
                     'edu_university' => $item['edu_university'],
                     '_edu_high_level' => $item['_edu_high_level'],
                     'job'       => $item['profession'],
-                    'address'   => [
+                    'address'   => array(
                         'live'      => $item['cur_province'] . ' ' . $item['cur_city'],
                         'hometown'  => $item['hometown_province'] + $item['hometown_city'],
                         'post_addr' => $item['cur_addr'],
                         'post_code' => $item['post_code'],
-                    ],
+                    ),
                     'phone'     => $item['phone'],
                     //'mobile'    => $item['mobile'],
                     'email'     => $item['email'],
                     'qq'        => $item['qq'],
                     //'status'    => $item['status'],
                     'time'      => $item['time'],
-                    'verify'    => [
+                    'verify'    => array(
                         'admin'  => $item['verify_admin_id'],
                         'time'   => $item['verify_time'],
                         'status' => $item['verify_status'],
-                    ],
-                ]);
+                    ),
+                ));
             }
 
             switch ($type) {
@@ -404,7 +404,7 @@ class Admin extends Safe
         }
 
         $data['page']['type'] = $type;
-        $ip = new IP(['ONLYIP' => true, 'ECHO' => false]);
+        $ip = new IP(array('ONLYIP' => true, 'ECHO' => false));
         $data['admin']['cost'] = $this->mktimestamp(true);
         $data['admin']['ip'] = $ip->result;
         Core::json($data);
@@ -417,12 +417,12 @@ class Admin extends Safe
     private function index()
     {
         $params = func_get_args()[0];
-        $params['header'] = [
+        $params['header'] = array(
             'assets' => '/join/aef-content/theme/default/assets'
-        ];
-        $params['body'] = [];
+        );
+        $params['body'] = array();
         $params['body_file'] = 'index';
-        $params['footer'] = [];
+        $params['footer'] = array();
 
         new Template($params);
     }
@@ -433,13 +433,13 @@ class Admin extends Safe
      */
     private function makelog($str)
     {
-        $data = [];
+        $data = array();
         if (!$str) {
             $data['extra']['code'] = 400;
             $data['extra']['desc'] = '内部错误。';
             Core::json($data);
         }
-        $DB = new MySql(['MODE' => 'WRITE', 'DEBUG' => true]);
+        $DB = new MySql(array('MODE' => 'WRITE', 'DEBUG' => true));
         $sql = "INSERT INTO `logs` (`id`, `content`, `date`) VALUES (NULL, '$str', CURRENT_TIMESTAMP)";
         $DB->query($sql);
         $data['extra']['code'] = 200;
@@ -452,8 +452,8 @@ class Admin extends Safe
      */
     private function viewlog($page)
     {
-        $data = [];
-        $DB = new MySql(['MODE' => 'READ', 'DEBUG' => true]);
+        $data = array();
+        $DB = new MySql(array('MODE' => 'READ', 'DEBUG' => true));
 
         $pre_page = 100;
         $cur_page = $page;
@@ -466,13 +466,13 @@ class Admin extends Safe
 
         $result = $DB->query($sql);
         $count = $DB->num_rows($result);
-        $post = [];
+        $post = array();
         if ($count) {
             while ($item = $DB->fetch_array($result)) {
-                array_push($post, [
+                array_push($post, array(
                     'content' => $item['content'],
                     'date'    => $item['date']
-                ]);
+                ));
             }
             $sql = "SELECT COUNT( id ) FROM  `logs` WHERE 1 LIMIT 0 , 1";
 
@@ -491,7 +491,7 @@ class Admin extends Safe
             $data['page']['total'] = 1;
         }
 
-        $ip = new IP(['ONLYIP' => true, 'ECHO' => false]);
+        $ip = new IP(array('ONLYIP' => true, 'ECHO' => false));
         $data['admin']['cost'] = $this->mktimestamp(true);
         $data['admin']['ip'] = $ip->result;
         Core::json($data);

@@ -74,7 +74,7 @@ class Core
     {
         global $arguments;
 
-        $result = [];
+        $result = array();
         for ($i = 0, $n = count($args); $i < $n; $i++) {
             $result = self::associative_push($args[ $i ], $result);
         }

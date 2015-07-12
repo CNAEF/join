@@ -229,7 +229,7 @@
                                     html += '<tr><th>大学</th><td>' + bigData['data']['education']['university'] + '</td></tr>';
                                     html += '</tbody></table>';
                                 }
-                                if (codeChecker(resp) && (bigData['data']['photo']['id'] || bigData['data']['photo']['edu'] || bigData['data']['photo']['user')]) {
+                                if (codeChecker(resp) && (bigData['data']['photo']['id'] || bigData['data']['photo']['edu'] || bigData['data']['photo']['user'])) {
                                     html += '<h4>照片</h4>'
                                     html += '<table class="table table-bordered person-table"><tbody>';
                                     if(bigData['data']['photo']['id'])

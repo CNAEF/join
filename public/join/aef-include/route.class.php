@@ -57,7 +57,7 @@ class Route extends Safe
         // 第二次进行正则匹配
 		if ($RouteRegexpRules)
 			foreach ($RouteRegexpRules as $rule => $execute) {
-				$regexp = '/^' . str_replace(['/', '?'], ['\/', '\?'], $rule) . '/';
+				$regexp = '/^' . str_replace(array('/', '?'), array('\/', '\?'), $rule) . '/';
 				if (preg_match($regexp, $uri)) {
 					app::$execute();
 					return true;

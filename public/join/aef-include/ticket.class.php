@@ -14,7 +14,7 @@ if (!defined('FILE_PREFIX')) include "../error-forbidden.php";
 
 class Ticket extends Safe
 {
-    private $args = [];
+    private $args = array();
     private $process_time_start;
     private $process_time_end;
 
@@ -131,7 +131,7 @@ class Ticket extends Safe
 			'?verify_status		|								|1.verify_status		|',
 			'?time				|								|1.time					|',
 		);
-		$data2DB = $errors  = [];
+		$data2DB = $errors  = array();
 		foreach ($mapping as $key=>$value) {
 			$arr = explode('|', $value);
 			$index = str_replace('?', '', trim($arr[0]));
@@ -249,8 +249,8 @@ class Ticket extends Safe
 			}
 		}
 
-		$DB = new MySql(['MODE' => 'WRITE' , 'DEBUG' => DEBUG]);
-		$ip = new IP(['ONLYIP' => true, 'ECHO' => false]);
+		$DB = new MySql(array('MODE' => 'WRITE' , 'DEBUG' => DEBUG));
+		$ip = new IP(array('ONLYIP' => true, 'ECHO' => false));
 		
 		$exec = $DB->insert('user_info' , $data2DB);
 		

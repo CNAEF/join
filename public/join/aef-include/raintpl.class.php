@@ -62,7 +62,7 @@ class RainTPL extends Debug
      *
      * @var array
      */
-    static $path_replace_list = ['a', 'img', 'link', 'script', 'input'];
+    static $path_replace_list = array('a', 'img', 'link', 'script', 'input');
 
 
     /**
@@ -70,7 +70,7 @@ class RainTPL extends Debug
      *
      * @var unknown_type
      */
-    static $black_list = ['\$this', 'raintpl::', 'self::', '_SESSION', '_SERVER', '_ENV', 'eval', 'exec', 'unlink', 'rmdir'];
+    static $black_list = array('\$this', 'raintpl::', 'self::', '_SESSION', '_SERVER', '_ENV', 'eval', 'exec', 'unlink', 'rmdir');
 
 
     /**
@@ -120,13 +120,13 @@ class RainTPL extends Debug
      *
      * @var array
      */
-    public $var = [];
+    public $var = array();
 
-    protected $tpl = [],        // variables to keep the template directories and info
+    protected $tpl = array(),        // variables to keep the template directories and info
         $cache = false,        // static cache enabled / disabled
         $cache_id = null;       // identify only one cache
 
-    protected static $config_name_sum = [];   // takes all the config to create the md5 of the file
+    protected static $config_name_sum = array();   // takes all the config to create the md5 of the file
 
     // -------------------------
 
@@ -356,7 +356,7 @@ class RainTPL extends Debug
     {
 
         //tag list
-        $tag_regexp = ['loop'          => '(\{loop(?: name){0,1}="\${0,1}[^"]*"\})',
+        $tag_regexp = array('loop'          => '(\{loop(?: name){0,1}="\${0,1}[^"]*"\})',
                        'break'         => '(\{break\})',
                        'loop_close'    => '(\{\/loop\})',
                        'if'            => '(\{if(?: condition){0,1}="[^"]*"\})',
@@ -371,7 +371,7 @@ class RainTPL extends Debug
                        'include'       => '(\{include="[^"]*"(?: cache="[^"]*")?\})',
                        'template_info' => '(\{\$template_info\})',
                        'function'      => '(\{function="(\w*?)(?:.*?)"\})'
-        ];
+        );
 
         $tag_regexp = "/" . join("|", $tag_regexp) . "/";
 
@@ -723,7 +723,7 @@ class RainTPL extends Debug
 
             $exp = [];
 
-            $tags = array_intersect(["link", "a"], self::$path_replace_list);
+            $tags = array_intersect(array("link", "a"), self::$path_replace_list);
             $exp[] = '/<(' . join('|', $tags) . ')(.*?)(href)="(' . $url . ')"/i';
 
             $tags = array_intersect(["img", "script", "input"], self::$path_replace_list);
@@ -852,7 +852,7 @@ class RainTPL extends Debug
         if (preg_match_all('/' . $tag_left_delimiter . '\$(\w+(?:\.\${0,1}[A-Za-z0-9_]+)*(?:(?:\[\${0,1}[A-Za-z0-9_]+\])|(?:\-\>\${0,1}[A-Za-z0-9_]+))*)(.*?)' . $tag_right_delimiter . '/', $html, $matches)) {
 
             for ($parsed = [], $i = 0, $n = count($matches[0]); $i < $n; $i++)
-                $parsed[ $matches[0][ $i ] ] = ['var' => $matches[1][ $i ], 'extra_var' => $matches[2][ $i ]];
+                $parsed[ $matches[0][ $i ] ] = array('var' => $matches[1][ $i ], 'extra_var' => $matches[2][ $i ]);
 
             foreach ($parsed as $tag => $array) {
 
