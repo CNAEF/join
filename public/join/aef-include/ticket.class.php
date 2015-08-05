@@ -272,7 +272,7 @@ class Ticket extends Safe
             }
         } else {
             //若失败插入失败查询
-			$sql = "INSERT INTO `error` (`id` ,`name`, `qq`, `phone`, `ip`, `date`) VALUES (NULL, '$name', '$qq', '$phone', " . ip2long($ip->result) . ", CURRENT_TIMESTAMP);";
+            $sql = "INSERT INTO `error` (`id` ,`name`, `qq`, `phone`, `ip`, `date`) VALUES (NULL, '$name', '$qq', '$phone', " . ip2long($ip->result) . ", CURRENT_TIMESTAMP);";
             $DB->query($sql);
             $ret['extra']['desc'] = "提交数据出现问题。";
             $ret['extra']['code'] = 500;

@@ -417,7 +417,9 @@ class Admin extends Safe
     {
         $params = func_get_args()[0];
         $params['header'] = array(
-            'assets' => '/join/aef-content/theme/default/assets'
+                //'assets' => '/join/aef-content/theme/default/assets',
+                'PAGE_CHARSET' => C_CHARSET,
+                'PAGE_LANG' => C_LANG
         );
         $params['body'] = array();
         $params['body_file'] = 'index';
