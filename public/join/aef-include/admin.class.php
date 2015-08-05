@@ -147,7 +147,6 @@ class Admin extends Safe
 
     /**
      * 审核通过
-     *
      */
     private function accept($id)
     {
