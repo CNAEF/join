@@ -359,7 +359,7 @@ class Admin extends Safe
                     'job'       => $item['profession'],
                     'address'   => array(
                         'live'      => $item['cur_province'] . ' ' . $item['cur_city'],
-                        'hometown'  => $item['hometown_province'] + $item['hometown_city'],
+                        'hometown'  => $item['hometown_province'] . $item['hometown_city'],
                         'post_addr' => $item['cur_addr'],
                         'post_code' => $item['post_code'],
                     ),
