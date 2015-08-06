@@ -233,9 +233,9 @@
                                     html += '<h4>照片</h4>'
                                     html += '<table class="table table-bordered person-table"><tbody>';
                                     if(bigData['data']['photo']['id'])
-                                      html += '<tr><th>身份证</th><td><img src="aef-upload/user_photo/' + bigData['data']['photo']['id'] + '"></td></tr>';
+                                      html += '<tr><th>身份证</th><td><img src="aef-upload/id_photo/' + bigData['data']['photo']['id'] + '"></td></tr>';
                                     if(bigData['data']['photo']['edu'])
-                                      html += '<tr><th>学历</th><td><img src="aef-upload/user_photo/' + bigData['data']['photo']['edu'] + '"></td></tr>';
+                                      html += '<tr><th>学历</th><td><img src="aef-upload/edu_photo/' + bigData['data']['photo']['edu'] + '"></td></tr>';
                                     if(bigData['data']['photo']['user'])
                                     	html += '<tr><th>生活</th><td><img src="aef-upload/user_photo/' + bigData['data']['photo']['user'] + '"></td></tr>';
                                     html += '</tbody></table>';
